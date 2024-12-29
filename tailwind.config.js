@@ -9,7 +9,9 @@ export default {
       colors: {
         brand: {
           20: "#e6f1ff",
+          40: "#1c8aff",
           50: "#0c82ff",
+          70: "#007bff",
         },
         error: {
           20: "#ffdede",

@@ -4,6 +4,7 @@ import { useActiveFunctionality } from "../hooks/useActiveFunctionality";
 
 import { SidebarOption } from "../interfaces/SidebarInterfaces";
 
+import Logo from "../components/Sidebar/Logo";
 import Menu from "../components/Sidebar/Menu";
 
 const Sidebar: React.FC = React.memo(() => {
@@ -52,9 +53,14 @@ const Sidebar: React.FC = React.memo(() => {
   ]
 
   return (
-    <section className="flex flex-col justify-between h-full w-60 p-4 border-r-2 border-gray-200">
-      <Menu data={functionalities} />
-      <Menu data={userActions} />
+    <section className="flex flex-col justify-start gap-4 h-full w-60 p-4 border-r-2 border-gray-200">
+      <div className="h-auto w-full">
+        <Logo />
+      </div>
+      <div className="flex flex-col justify-between w-full h-full">
+        <Menu data={functionalities} />
+        <Menu data={userActions} />
+      </div>
     </section>
   );
 });
