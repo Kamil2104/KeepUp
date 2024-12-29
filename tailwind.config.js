@@ -16,6 +16,10 @@ export default {
           50: "#ff3636",
         }
       },
+      fontFamily: {
+        heading: ["Red Hat Display", "sans-serif"],
+        body: ["Nunito Sans", "sans-serif"],
+      }
     },
   },
   plugins: [],
