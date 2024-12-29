@@ -1,11 +1,15 @@
 import React from "react"
 
-const App: React.FC = () => {
+import Sidebar from "./pages/Sidebar"
+import Dashboard from "./pages/Dashboard"
+
+const App: React.FC = React.memo(() => {
   return (
-    <section className="w-screen h-screen">
-      <p> App </p>
+    <section className="flex flex-row w-screen h-screen">
+      <Sidebar />
+      <Dashboard />
     </section>
   )
-}
+})
 
 export default App
