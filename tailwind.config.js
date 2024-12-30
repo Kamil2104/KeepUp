@@ -8,8 +8,9 @@ export default {
     extend: {
       colors: {
         brand: {
-          20: "#e6f1ff",
-          40: "#1c8aff",
+          20: "#d1e5ff",
+          30: "#49a1fe",
+          40: "#3b82f6",
           50: "#0c82ff",
           70: "#007bff",
         },
