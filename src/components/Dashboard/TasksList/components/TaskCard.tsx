@@ -20,9 +20,9 @@ const TaskCard: React.FC<{ task: Task, borderColor: string }> = React.memo(({ ta
       </div>
 
       {isPopupOpen && (
-        <div className="fixed inset-0 flex justify-center items-center z-50">
+        <div className=" fixed inset-0 flex justify-center items-center z-10">
           <div onClick={() => setIsPopupOpen(false)} className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity duration-300"> </div>
-          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 p-6 z-60 animate-fade-in">
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 p-6 z-20">
             <div className='flex flex-row justify-between items-center mb-6'>
               <h2 className="text-3xl font-heading font-bold"> {task.name} </h2>
               <svg  className='h-8 w-8 cursor-pointer fill-black hover:fill-red-700 transition-colors duration-200' onClick={() => setIsPopupOpen(false)} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="m12 13.4l-4.9 4.9q-.275.275-.7.275t-.7-.275t-.275-.7t.275-.7l4.9-4.9l-4.9-4.9q-.275-.275-.275-.7t.275-.7t.7-.275t.7.275l4.9 4.9l4.9-4.9q.275-.275.7-.275t.7.275t.275.7t-.275.7L13.4 12l4.9 4.9q.275.275.275.7t-.275.7t-.7.275t-.7-.275z" /> </svg>

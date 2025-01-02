@@ -9,7 +9,9 @@ import { setFilterType, setSortType } from '../../../../store/userPreferencesRed
 
 import { getFilteredOptions } from '../utils/filterOptions';
 
-const TasksActions: React.FC = React.memo(() => {
+import Button from '../../../Reusable/Button';
+
+const TasksActions: React.FC<{ handleTaskManagementOpening: (type: string) => void }> = React.memo(({ handleTaskManagementOpening }) => {
   const dispatch = useDispatch();
 
   const { filterType, sortType } = useSelector((state: { userPreferences: UserPreferencesTasksState }) => state.userPreferences);
@@ -28,18 +30,10 @@ const TasksActions: React.FC = React.memo(() => {
 
   return (
     <div className='flex flex-row gap-4 w-11/12'>
-        <AddNewTaskButton />
+        <Button text='Add new task' onClick={() => handleTaskManagementOpening('Add')}/>
         <FilterTypeSetter filterType={filterType} updateFilterType={updateFilterType} />
         <SortTypeSetter sortType={sortType} updateSortType={updateSortType} toggleSortDirection={toggleSortDirection} />
     </div>
-  )
-})
-
-const AddNewTaskButton: React.FC = React.memo(() => {
-  return (
-    <button className='h-11 min-w-36 font-heading text-white font-semibold text-lg bg-brand-40 rounded-lg cursor: pointer hover:bg-brand-30 transition-all duration-200 ease-linear px-2'>
-      Add new task
-    </button>
   )
 })
 
