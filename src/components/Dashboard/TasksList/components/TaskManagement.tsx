@@ -44,7 +44,6 @@ const TaskManagement: React.FC<{ taskManagementType: string, setIsTaskManagement
     }
   };
 
-
   const handleTaskCreation = () => {
     dispatch(addNewTask(newUserTaskData))
     setIsTaskManagementOpen(false)

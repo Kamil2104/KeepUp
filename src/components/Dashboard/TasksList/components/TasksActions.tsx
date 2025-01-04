@@ -58,7 +58,7 @@ const FilterTypeSetter: React.FC<{ filterType: string, updateFilterType: (type: 
       {isMenuOpen && (
         <div className="absolute top-full left-0 mt-2 w-36 bg-white rounded-lg shadow-lg z-10">
           {filteredFilterTypeOptions.map((option) => (
-            <div key={option} onClick={() => { console.log(option); setIsMenuOpen(false); updateFilterType(option)}} className='flex justify-center items-center h-10 w-full text-md font-medium font-heading hover:bg-gray-200 cursor-pointer first:rounded-t-lg last:rounded-b-lg'>
+            <div key={option} onClick={() => { setIsMenuOpen(false); updateFilterType(option)}} className='flex justify-center items-center h-10 w-full text-md font-medium font-heading hover:bg-gray-200 cursor-pointer first:rounded-t-lg last:rounded-b-lg'>
               {option}
             </div>
           ))}
