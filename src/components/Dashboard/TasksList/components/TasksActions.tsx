@@ -10,6 +10,7 @@ import { setFilterType, setSortType } from '../../../../store/userPreferencesRed
 import { getFilteredOptions } from '../utils/filterOptions';
 
 import Button from '../../../Reusable/Button';
+import DropdownMenu from '../../../Reusable/DropdownMenu';
 
 const TasksActions: React.FC<{ handleTaskManagementOpening: (type: string) => void }> = React.memo(({ handleTaskManagementOpening }) => {
   const dispatch = useDispatch();
@@ -54,15 +55,8 @@ const FilterTypeSetter: React.FC<{ filterType: string, updateFilterType: (type: 
         </div>
       </div>
 
-      {/* Dropdown menu */}
       {isMenuOpen && (
-        <div className="absolute top-full left-0 mt-2 w-36 bg-white rounded-lg shadow-lg z-10">
-          {filteredFilterTypeOptions.map((option) => (
-            <div key={option} onClick={() => { setIsMenuOpen(false); updateFilterType(option)}} className='flex justify-center items-center h-10 w-full text-md font-medium font-heading hover:bg-gray-200 cursor-pointer first:rounded-t-lg last:rounded-b-lg'>
-              {option}
-            </div>
-          ))}
-        </div>
+        <DropdownMenu options={filteredFilterTypeOptions} setIsMenuOpen={setIsMenuOpen} updateFunction={updateFilterType} />
       )}
     </div>
   )
@@ -88,15 +82,8 @@ const SortTypeSetter: React.FC<{ sortType: [string, string], updateSortType: (ty
         </div>
       </div>
 
-      {/* Dropdown menu */}
       {isMenuOpen && (
-        <div className="absolute top-full left-0 mt-2 w-36 bg-white rounded-lg shadow-lg z-10">
-          {filteredSortTypeOptions.map((option) => (
-            <div key={option} onClick={() => { setIsMenuOpen(false); updateSortType(option)}} className='flex justify-center items-center h-9 w-full text-md font-medium font-heading hover:bg-gray-200 cursor-pointer first:rounded-t-lg last:rounded-b-lg px-2'>
-              {option}
-            </div>
-          ))}
-        </div>
+        <DropdownMenu options={filteredSortTypeOptions} setIsMenuOpen={setIsMenuOpen} updateFunction={updateSortType} />
       )}
     </div>
   );
