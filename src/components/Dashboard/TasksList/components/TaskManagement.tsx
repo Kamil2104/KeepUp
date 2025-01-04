@@ -27,7 +27,7 @@ const TaskManagement: React.FC<{ taskManagementType: string, setIsTaskManagement
     status: 'To do',
     dueDate: formattedDate,
     priority: 'Low',
-    tag: { name: '', backgroundColor: '', borderColor: '' }
+    tag: { name: userTags[0].name, backgroundColor: userTags[0].backgroundColor, borderColor: userTags[0].borderColor }
   })
 
   const handleTagChange = (tagName: string) => {
