@@ -125,7 +125,7 @@ const Subtasks: React.FC<SubtasksType> = React.memo(({ id, value, onUpdate }) =>
         />
         <svg onClick={handleAddSubtask} className='h-6 w-6 fill-dark cursor-pointer' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"> <path d="M17 7v3h-5v5H9v-5H4V7h5V2h3v5z" /> </svg>
       </div>
-      {value.map((subtask) => (<Subtask key={subtask.name} name={subtask.name} completed={subtask.completed} value={value} onUpdate={onUpdate} />))}
+      {value.map((subtask, index) => (<Subtask key={index} name={subtask.name} completed={subtask.completed} value={value} onUpdate={onUpdate} />))}
     </div>
   )
 })
@@ -136,7 +136,7 @@ const Subtask: React.FC<SubtaskDisplayType> = React.memo(({ name, completed, val
       <input
         type='checkbox'
         onClick={() => onUpdate(value.map(subtask => subtask.name === name ? { ...subtask, completed: !completed } : subtask))}
-        checked={completed}
+        defaultChecked={completed}
         className='h-4 w-4 cursor-pointer text-dark'
       />
       <p className='text-dark'> {name} </p>
