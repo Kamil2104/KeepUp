@@ -15,7 +15,7 @@ const Dashboard: React.FC = React.memo(() => {
   }
 
   return (
-    <section className='flex flex-col h-full w-full'>
+    <section className='flex flex-col min-h-dvh w-full pb-5'>
       <Header />
       {renderActiveFunctionality()}
     </section>

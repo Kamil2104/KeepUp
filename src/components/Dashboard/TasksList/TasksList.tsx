@@ -41,7 +41,7 @@ const Tasks: React.FC = React.memo(() => {
     <>
       {Object.entries(displayedTasks).map(([tagName, { tasks, backgroundColor, borderColor }]) => (
         <div key={tagName} className="w-11/12">
-          <h2 className={`w-full text-2xl font-heading font-semibold text-dark py-2 pl-4 rounded-tl-md rounded-tr-md ${backgroundColor}`}> {tagName} </h2>
+          <h2 className={`w-full text-2xl font-heading font-semibold text-black py-2 pl-4 rounded-tl-md rounded-tr-md ${backgroundColor}`}> {tagName} </h2>
           <div className="flex flex-col">
             {tasks.map((task) => (
               <TaskCard key={task.name} task={task} borderColor={borderColor} />
