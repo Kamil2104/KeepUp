@@ -1,39 +1,22 @@
-import React from 'react'
-import { useSelector, useDispatch } from 'react-redux';
+import React from 'react';
 
 import { useDropdownMenu } from '../hooks/useDropdownMenu';
 
-import { UserPreferencesTasksState } from '../../../../interfaces/TasksInterfaces';
-
-import { setFilterType, setSortType } from '../../../../store/userPreferencesReducer';
+import { TasksActionsProps } from '../../../../interfaces/TasksInterfaces';
 
 import { getFilteredOptions } from '../utils/filterOptions';
 
 import Button from '../../../Reusable/Button';
 import DropdownMenu from '../../../Reusable/DropdownMenu';
 
-const TasksActions: React.FC<{ handleTaskManagementOpening: (type: string) => void }> = React.memo(({ handleTaskManagementOpening }) => {
-  const dispatch = useDispatch();
-
-  const { filterType, sortType } = useSelector((state: { userPreferences: UserPreferencesTasksState }) => state.userPreferences);
-
-  const updateFilterType = (newFilterType: string) => {
-    dispatch(setFilterType(newFilterType));
-  }
-
-  const updateSortType = (newSortType: string) => {
-    dispatch(setSortType([newSortType, sortType[1]]))
-  }
-
-  const toggleSortDirection = () => {
-    dispatch(setSortType([sortType[0], sortType[1] === 'Ascending' ? 'Descending' : 'Ascending']))
-  }
-
+// Props are not destructurized, beacuse of huge number of passed states and functions.
+// For the better readability, there is a shortened version - props
+const TasksActions: React.FC<TasksActionsProps> = React.memo((props) => {
   return (
     <div className='flex flex-row gap-4 w-11/12'>
-        <Button text='Add new task' onClick={() => handleTaskManagementOpening('Add')}/>
-        <FilterTypeSetter filterType={filterType} updateFilterType={updateFilterType} />
-        <SortTypeSetter sortType={sortType} updateSortType={updateSortType} toggleSortDirection={toggleSortDirection} />
+        <Button text='Add new task' onClick={() => props.handleTaskManagementOpening('Add')}/>
+        <FilterTypeSetter filterType={props.filterType} updateFilterType={props.updateFilterType} />
+        <SortTypeSetter sortType={props.sortType} updateSortType={props.updateSortType} toggleSortDirection={props.toggleSortDirection} />
     </div>
   )
 })

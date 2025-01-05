@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { useSelector } from 'react-redux';
 
-import { Task, UserPreferencesTasksState } from '../../../interfaces/TasksInterfaces';
+import { Task } from '../../../interfaces/TasksInterfaces';
 
 import TaskManagement from './components/TaskManagement';
 import TasksActions from './components/TasksActions';
@@ -18,18 +18,22 @@ const TasksList: React.FC = React.memo(() => {
   const [isTaskManagementOpen, setIsTaskManagementOpen] = useState<boolean>(false);
   const [taskManagementType, setTaskManagementType] = useState<string>('');
 
-  const handleTaskManagementOpening = (type: string) => {
-    setIsTaskManagementOpen(true)
-    setTaskManagementType(type)
-  }
+  const [filterType, setFilterType] = useState<string>('All')
+  const [sortType, setSortType] = useState<[string, string]>(['Category', 'Descending'])
+
+  const handleTaskManagementOpening = (type: string) => { setIsTaskManagementOpen(true); setTaskManagementType(type) }
+
+  const updateFilterType = (newFilterType: string) => setFilterType(newFilterType)
+  const updateSortType = (newSortType: string) => setSortType([newSortType, sortType[1]])
+  const toggleSortDirection = () => setSortType([sortType[0], sortType[1] === 'Ascending' ? 'Descending' : 'Ascending'])
 
   return (
     <div className="flex flex-col justify-start items-center gap-8 w-full h-full mt-2">
       {userTasks.length > 0
       ?
         <>
-          <TasksActions handleTaskManagementOpening={handleTaskManagementOpening} />
-          <Tasks userTasks={userTasks} />
+          <TasksActions handleTaskManagementOpening={handleTaskManagementOpening} filterType={filterType} sortType={sortType}  updateFilterType={updateFilterType} updateSortType={updateSortType} toggleSortDirection={toggleSortDirection} />
+          <Tasks userTasks={userTasks} filterType={filterType} sortType={sortType}/>
         </>
       : <NoTasksAvailable handleTaskManagementOpening={handleTaskManagementOpening} />
       }
@@ -38,9 +42,7 @@ const TasksList: React.FC = React.memo(() => {
   );
 });
 
-const Tasks: React.FC<{ userTasks: Task[] }> = React.memo(({ userTasks }) => {
-  const { filterType, sortType } = useSelector((state: { userPreferences: UserPreferencesTasksState }) => state.userPreferences);
-
+const Tasks: React.FC<{ userTasks: Task[], filterType: string, sortType: [string, string] }> = React.memo(({ userTasks, filterType, sortType }) => {
   const filteredAndSortedTasks = filterAndSortTasks(userTasks, filterType, sortType);
   const displayedTasks = groupTasksByTag(filteredAndSortedTasks);
 

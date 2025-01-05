@@ -20,10 +20,14 @@ export interface TagType {
     borderColor: string;
 }
 
-// Tasks preferences
-export interface UserPreferencesTasksState {
+// Tasks actions
+export interface TasksActionsProps {
+    handleTaskManagementOpening: (type: string) => void;
     filterType: string;
     sortType: [string, string];
+    updateFilterType: (newFilterType: string) => void;
+    updateSortType: (newSortType: string) => void;
+    toggleSortDirection: () => void;
 }
 
 // Tasks management
