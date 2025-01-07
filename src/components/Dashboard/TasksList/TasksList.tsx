@@ -21,7 +21,7 @@ const TasksList: React.FC = React.memo(() => {
   const [filterType, setFilterType] = useState<string>('All')
   const [sortType, setSortType] = useState<[string, string]>(['Category', 'Descending'])
 
-  const handleTaskManagementOpening = (type: string) => { setIsTaskManagementOpen(true); setTaskManagementType(type) }
+  const handleTaskManagementOpening = useCallback((type: string) => { setIsTaskManagementOpen(true); setTaskManagementType(type) }, [setIsTaskManagementOpen, setTaskManagementType])
 
   const updateFilterType = useCallback((newFilterType: string) => setFilterType(newFilterType), []);
   const updateSortType = useCallback((newSortType: string) => setSortType([newSortType, sortType[1]]), [sortType]);
@@ -33,7 +33,7 @@ const TasksList: React.FC = React.memo(() => {
       ?
         <>
           <TasksActions handleTaskManagementOpening={handleTaskManagementOpening} filterType={filterType} sortType={sortType}  updateFilterType={updateFilterType} updateSortType={updateSortType} toggleSortDirection={toggleSortDirection} />
-          <Tasks userTasks={userTasks} filterType={filterType} sortType={sortType}/>
+          <Tasks userTasks={userTasks} filterType={filterType} sortType={sortType} handleTaskManagementOpening={handleTaskManagementOpening}/>
         </>
       : <NoTasksAvailable handleTaskManagementOpening={handleTaskManagementOpening} />
       }
@@ -42,9 +42,11 @@ const TasksList: React.FC = React.memo(() => {
   );
 });
 
-const Tasks: React.FC<{ userTasks: Task[], filterType: string, sortType: [string, string] }> = React.memo(({ userTasks, filterType, sortType }) => {
+const Tasks: React.FC<{ userTasks: Task[], filterType: string, sortType: [string, string], handleTaskManagementOpening: (type: string) => void }> = React.memo(({ userTasks, filterType, sortType, handleTaskManagementOpening }) => {
   const filteredAndSortedTasks = useMemo(() => filterAndSortTasks(userTasks, filterType, sortType), [userTasks, filterType, sortType])
   const displayedTasks = useMemo(() => groupTasksByTag(filteredAndSortedTasks), [filteredAndSortedTasks])
+
+  if (filteredAndSortedTasks.length == 0) return <NoTasksAvailable className="-translate-y-8" handleTaskManagementOpening={handleTaskManagementOpening}/>
 
   return (
     <>
@@ -61,9 +63,9 @@ const Tasks: React.FC<{ userTasks: Task[], filterType: string, sortType: [string
     </>
 )})
 
-const NoTasksAvailable: React.FC<{ handleTaskManagementOpening: (type: string) => void }> = React.memo(({ handleTaskManagementOpening }) => {
+const NoTasksAvailable: React.FC<{ className?: string, handleTaskManagementOpening: (type: string) => void }> = React.memo(({ className, handleTaskManagementOpening }) => {
   return (
-    <div className='flex flex-col justify-center items-center gap-6 h-full w-full'>
+    <div className={`flex flex-col justify-center items-center gap-6 h-full w-full ${className ? className : ''}`}>
       <h3 className='text-3xl text-gray-700 font-heading font-medium'> You don't have any unfinished tasks. </h3>
       <Button text='Add new task' onClick={() => handleTaskManagementOpening('Add')} />
     </div>
