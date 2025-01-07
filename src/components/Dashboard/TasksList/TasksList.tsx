@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 
 import { useSelector } from 'react-redux';
 
@@ -23,9 +23,9 @@ const TasksList: React.FC = React.memo(() => {
 
   const handleTaskManagementOpening = (type: string) => { setIsTaskManagementOpen(true); setTaskManagementType(type) }
 
-  const updateFilterType = (newFilterType: string) => setFilterType(newFilterType)
-  const updateSortType = (newSortType: string) => setSortType([newSortType, sortType[1]])
-  const toggleSortDirection = () => setSortType([sortType[0], sortType[1] === 'Ascending' ? 'Descending' : 'Ascending'])
+  const updateFilterType = useCallback((newFilterType: string) => setFilterType(newFilterType), []);
+  const updateSortType = useCallback((newSortType: string) => setSortType([newSortType, sortType[1]]), [sortType]);
+  const toggleSortDirection = useCallback(() => setSortType([sortType[0], sortType[1] === 'Ascending' ? 'Descending' : 'Ascending']), [sortType]);
 
   return (
     <div className="flex flex-col justify-start items-center gap-8 w-full h-full mt-2">
@@ -43,8 +43,8 @@ const TasksList: React.FC = React.memo(() => {
 });
 
 const Tasks: React.FC<{ userTasks: Task[], filterType: string, sortType: [string, string] }> = React.memo(({ userTasks, filterType, sortType }) => {
-  const filteredAndSortedTasks = filterAndSortTasks(userTasks, filterType, sortType);
-  const displayedTasks = groupTasksByTag(filteredAndSortedTasks);
+  const filteredAndSortedTasks = useMemo(() => filterAndSortTasks(userTasks, filterType, sortType), [userTasks, filterType, sortType])
+  const displayedTasks = useMemo(() => groupTasksByTag(filteredAndSortedTasks), [filteredAndSortedTasks])
 
   return (
     <>

@@ -1,4 +1,4 @@
-import React, { useState, SetStateAction } from 'react'
+import React, { SetStateAction, useState, useMemo, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 
 import { Task, SubtaskDisplayType, InputType, SubtasksType, SelectType } from '../../../../interfaces/TasksInterfaces'
@@ -13,12 +13,12 @@ const TaskManagement: React.FC<{ taskManagementType: string, setIsTaskManagement
 
   const userTags = useSelector((state: { userPreferences: UserPreferencesType }) => state.userPreferences.tags)
 
-  const today = new Date();
-  const formattedDate = today.toISOString().split('T')[0]; // YYYY-MM-DD
+  const today = new Date()
+  const formattedDate = today.toISOString().split('T')[0] // YYYY-MM-DD
 
   const taskStatusOptions = ['To do', 'In progress', 'Done']
   const taskPriorityOptions = ['Low', 'Medium', 'High']
-  const tagOptions = userTags.map(tag => tag.name)
+  const tagOptions = useMemo(() => userTags.map(tag => tag.name), [userTags])
 
   const [newUserTaskData, setNewUserTaskData] = useState<Task>({
     name: '',
@@ -30,24 +30,24 @@ const TaskManagement: React.FC<{ taskManagementType: string, setIsTaskManagement
     tag: { name: userTags[0].name, backgroundColor: userTags[0].backgroundColor, borderColor: userTags[0].borderColor }
   })
 
-  const handleTagChange = (tagName: string) => {
+  const handleTagChange = useCallback((tagName: string) => {
     const selectedTag = userTags.find(tag => tag.name === tagName);
     if (selectedTag) {
-      setNewUserTaskData({
-        ...newUserTaskData,
+      setNewUserTaskData((prevTaskData) => ({
+        ...prevTaskData,
         tag: {
           name: selectedTag.name,
           backgroundColor: selectedTag.backgroundColor,
           borderColor: selectedTag.borderColor,
         },
-      });
+      }));
     }
-  };
+  }, [userTags]);
 
-  const handleTaskCreation = () => {
+  const handleTaskCreation = useCallback(() => {
     dispatch(addNewTask(newUserTaskData))
     setIsTaskManagementOpen(false)
-  }
+  }, [dispatch, newUserTaskData, setIsTaskManagementOpen])
 
   return (
     <div className='fixed inset-0 flex justify-center items-center z-50'>
@@ -97,19 +97,19 @@ const Select: React.FC<SelectType> = React.memo(({ id, options, value, onChange 
 const Subtasks: React.FC<SubtasksType> = React.memo(({ id, value, onUpdate }) => {
   const [newSubtask, setNewSubtask] = useState<string>('')
 
-  const handleAddSubtask = () => {
+  const handleAddSubtask = useCallback(() => {
     if (newSubtask.trim()) {
-      onUpdate([...value, { name: newSubtask, completed: false }])
-      setNewSubtask('')
+      onUpdate([...value, { name: newSubtask, completed: false }]);
+      setNewSubtask('');
     }
-  }
+  }, [newSubtask, onUpdate, value]);  
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      e.preventDefault()
-      handleAddSubtask()
+      e.preventDefault();
+      handleAddSubtask();
     }
-  }
+  }, [handleAddSubtask]); 
 
   return (
     <div className='flex flex-col gap-3 w-full'>

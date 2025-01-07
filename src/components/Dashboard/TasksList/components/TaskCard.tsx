@@ -96,7 +96,7 @@ const TaskCardPopup: React.FC<{ task: Task, setIsPopupOpen: React.Dispatch<SetSt
           <>
             <p className='text-lg text-dark font-semibold'> Subtasks: </p>
             <div className='space-y-2'>
-              {task.subtasks.map((subtask) => (
+              {task.subtasks?.map((subtask) => (
                 <Subtask key={subtask.name} name={subtask.name} completed={subtask.completed} />
               ))}
             </div>
