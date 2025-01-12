@@ -53,7 +53,7 @@ const Sidebar: React.FC = React.memo(() => {
   ]
 
   return (
-    <section className="position-sticky flex flex-col justify-start gap-4 min-h-dvh min-w-60 p-4 border-r-2 border-gray-200">
+    <section className="position-sticky flex flex-col justify-start gap-4 max-h-dvh min-w-60 p-4 border-r-2 border-gray-200">
       <div className="h-auto w-full">
         <Logo />
       </div>
