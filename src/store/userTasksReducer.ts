@@ -44,10 +44,13 @@ const userTasksSlice = createSlice({
   reducers: {
     addNewTask(state, action: PayloadAction<Task>) {
       state.push(action.payload);
+    },
+    completeTask: (state, action: PayloadAction<string>) => {
+      return state.filter(task => task.name !== action.payload);
     }
   },
 });
 
-export const { addNewTask } = userTasksSlice.actions;
+export const { addNewTask, completeTask } = userTasksSlice.actions;
 
 export default userTasksSlice.reducer;

@@ -1,21 +1,36 @@
-import React, { SetStateAction, useState } from 'react'
+import React, { SetStateAction, useState, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+
+import { completeTask } from '../../../../store/userTasksReducer'
 
 import { Task } from '../../../../interfaces/TasksInterfaces'
 
+
 const TaskCard: React.FC<{ task: Task, borderColor: string }> = React.memo(({ task, borderColor }) => {
+  const dispatch = useDispatch()
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [isCompleted, setIsCompleted] = useState(false);
+
+  const handleCompleted = () => {
+    setTimeout(() => {setIsCompleted(true)},1000)
+  }
+
+  const onAnimationEnd = () => {
+    if(isCompleted) {
+      dispatch(completeTask(task.name))
+    }
+  }
 
   return (
     <>
-      <div className={`flex flex-col justify-start items-start w-full h-auto bg-slate-50 last:rounded-bl-md last:rounded-br-md p-4 border-l-4 ${borderColor}`}>
+      <div className={`flex flex-col justify-start items-start w-full h-auto bg-slate-50 last:rounded-bl-md last:rounded-br-md p-4 border-l-4 ${borderColor} ${isCompleted ? 'animate-fadeOut' : ''}`} onAnimationEnd={onAnimationEnd}>
         <div className='flex flex-row justify-between items-center w-full border-b-2 border-slate-200 pb-4'>
-          <HeadingAndStatus text={task.name} status={task.status} />
+          <HeadingAndStatus text={task.name} status={task.status} handleCompleted={handleCompleted} />
           <div className='flex flex-row justify-start gap-3'>
             {task.dueDate && <DueDateIcon dueDate={task.dueDate} />}
             <PriorityIcon priority={task.priority} />
           </div>
         </div>
-
         <p onClick={() => setIsPopupOpen(true)} className='flex flex-row justify-center items-center gap-1 font-body mt-4 cursor-pointer hover:underline text-dark hover:text-brand-40'> Show more </p>
       </div>
 
@@ -26,16 +41,40 @@ const TaskCard: React.FC<{ task: Task, borderColor: string }> = React.memo(({ ta
   );
 });
 
-const HeadingAndStatus: React.FC<{ text: string, status: string }> = React.memo(({ text, status }) => {
+const HeadingAndStatus: React.FC<{ text: string, status: string, handleCompleted: () => void }> = React.memo(({ text, status, handleCompleted }) => {
   const statusBackgroundColor = status === 'To do' ? 'bg-blue-200' : status === 'In progress' ? 'bg-orange-200' : 'bg-green-200'
+  const [isChecked, setIsChecked] = useState(false);
+
+  useEffect(() => {
+    if (isChecked) {
+      handleCompleted();
+    }
+  }, [isChecked, handleCompleted]);
+
+  const handleClick = () => {
+    setIsChecked(!isChecked)
+  }
 
   return (
+    <div className='flex flex-row items-center'>
+    <Checkbox isChecked={isChecked} onClick={handleClick}/>
     <div className='flex flex-row justify-center items-center gap-5'>
       <h3 className='font-heading font-medium text-dark text-xl leading-none'> {text} </h3>
       <p className={`font-body text-dark px-3 py-0.5 rounded-xl ${statusBackgroundColor}`}> {status} </p>
     </div>
+    </div>
   )
 })
+
+const Checkbox: React.FC<{isChecked: boolean, onClick: () => void}> = ({isChecked, onClick}) => {
+  return (
+    <div className={`w-6 h-6 border-2 rounded-full cursor-pointer mr-4 transition-all ${isChecked ? 'bg-green-500 border-green-500' : 'bg-white border-gray-300'} flex items-center justify-center`} onClick={onClick}>
+        {isChecked && <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" className="bi bi-check" viewBox="0 0 16 16">
+            <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+        </svg>}
+    </div>
+  )
+}
 
 const DueDateIcon: React.FC<{ dueDate: string }> = React.memo(({ dueDate }) => {
   const [isHovered, setIsHovered] = useState(false);
