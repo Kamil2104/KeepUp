@@ -1,8 +1,12 @@
 import React, { SetStateAction, useState } from 'react'
 
+import { useDispatch } from 'react-redux';
+
+import { removeSubtask, updateSubtask } from '../../../../store/userTasksReducer';
+
 import { Task } from '../../../../interfaces/TasksInterfaces'
 
-const TaskCard: React.FC<{ task: Task, borderColor: string }> = React.memo(({ task, borderColor }) => {
+const TaskCard: React.FC<{ task: Task, borderColor: string, handleTaskManagementOpening: (type: string) => void, setEditedTask: (task: Task) => void }> = React.memo(({ task, borderColor, handleTaskManagementOpening, setEditedTask }) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   return (
@@ -13,6 +17,7 @@ const TaskCard: React.FC<{ task: Task, borderColor: string }> = React.memo(({ ta
           <div className='flex flex-row justify-start gap-3'>
             {task.dueDate && <DueDateIcon dueDate={task.dueDate} />}
             <PriorityIcon priority={task.priority} />
+            <EditIcon task={task} setEditedTask={setEditedTask} handleTaskManagementOpening={handleTaskManagementOpening} />
           </div>
         </div>
 
@@ -40,12 +45,17 @@ const HeadingAndStatus: React.FC<{ text: string, status: string }> = React.memo(
 const DueDateIcon: React.FC<{ dueDate: string }> = React.memo(({ dueDate }) => {
   const [isHovered, setIsHovered] = useState(false);
 
+  const convertISOtoDate = (dateStr: string): string => {
+    const [year, month, day] = dateStr.split('-');
+    return `${day}.${month}.${year}`;
+  };
+
   return (
     <div className="relative inline-block" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
       <svg className='h-5 w-5 fill-dark cursor-pointer' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path d="M12 20a8 8 0 0 0 8-8a8 8 0 0 0-8-8a8 8 0 0 0-8 8a8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10a10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67l-.75 1.23L11 13V7z" /> </svg>
       {isHovered && (
         <div className="font-body absolute left-1/2 -translate-x-1/2 top-8 bg-dark text-white text-sm p-2 rounded shadow">
-          {dueDate}
+          {convertISOtoDate(dueDate)}
         </div>
       )}
     </div>
@@ -54,6 +64,7 @@ const DueDateIcon: React.FC<{ dueDate: string }> = React.memo(({ dueDate }) => {
 
 const PriorityIcon: React.FC<{ priority: string }> = React.memo(({ priority }) => {
   const [isHovered, setIsHovered] = useState(false);
+
   return (
     <div className="relative inline-block" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
       <svg className='h-5 w-5 stroke-dark cursor-pointer' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M11.576 1.424a.6.6 0 0 1 .848 0l10.152 10.152a.6.6 0 0 1 0 .848L12.424 22.576a.6.6 0 0 1-.848 0L1.424 12.424a.6.6 0 0 1 0-.848zM12 8v4m0 4.01l.01-.011" /> </svg>
@@ -66,15 +77,62 @@ const PriorityIcon: React.FC<{ priority: string }> = React.memo(({ priority }) =
   )
 })
 
-const Subtask: React.FC<{ name: string, completed: boolean }> = React.memo(({ name, completed }) => {
-  const [isChecked, setIsChecked] = useState(completed);
-
-  const icon = isChecked
-    ? <svg className='h-5 w-5 stroke-dark fill-brand-40 cursor-pointer' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"> <path d="M400 48H112a64.07 64.07 0 0 0-64 64v288a64.07 64.07 0 0 0 64 64h288a64.07 64.07 0 0 0 64-64V112a64.07 64.07 0 0 0-64-64m-35.75 138.29l-134.4 160a16 16 0 0 1-12 5.71h-.27a16 16 0 0 1-11.89-5.3l-57.6-64a16 16 0 1 1 23.78-21.4l45.29 50.32l122.59-145.91a16 16 0 0 1 24.5 20.58" /> </svg>
-    : <svg className='h-5 w-5 stroke-dark cursor-pointer' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"> <path fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="32" d="M352 176L217.6 336L160 272" /> <rect width="384" height="384" x="64" y="64" fill="none" stroke="currentColor" strokeLinejoin="round" strokeWidth="32" rx="48" ry="48" /> </svg>
+const EditIcon: React.FC<{ task: Task, setEditedTask: (task: Task) => void, handleTaskManagementOpening: (type: string) => void }> = React.memo(({ task, setEditedTask, handleTaskManagementOpening }) => {
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <p className='flex flex-row items-center gap-1 text-lg text-dark' onClick={() => setIsChecked(!isChecked)}> {icon} {name} </p>
+    <div className="relative inline-block" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+      <svg onClick={() => { handleTaskManagementOpening('Edit'); setEditedTask(task) }} className='h-5 w-5 stroke-dark fill-none cursor-pointer' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <g strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7"> <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /> <path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z" /> </g> </svg>      
+      {isHovered && (
+        <div  className="font-body absolute left-1/2 -translate-x-1/2 top-8 bg-dark text-white text-sm p-2 rounded shadow">
+          Edit
+        </div>
+      )}
+    </div>
+  )
+})
+
+const Subtask: React.FC<{ taskName: string, subtaskName: string, completed: boolean }> = React.memo(({ taskName, subtaskName, completed }) => {
+  const dispatch = useDispatch()
+
+  const [isChecked, setIsChecked] = useState(completed);
+  const [newSubtaskName, setNewSubtaskName] = useState(subtaskName)
+
+  const handleSubtaskDeletion = (taskNameParam: string, subtaskNameParam: string) => dispatch(removeSubtask({ taskName: taskNameParam, subtaskName: subtaskNameParam }))
+
+  const handleSubtaskValueUpdate = (completedParam: boolean, nameParam: string) => {
+    dispatch(updateSubtask(
+      { taskName: taskName,
+        subtaskName: subtaskName,
+        updatedSubtask: {name: nameParam, completed: completedParam}
+      }))
+  };
+
+  const handleCompletitionValueChange = () => {
+    setIsChecked(!isChecked)
+    handleSubtaskValueUpdate(!isChecked, newSubtaskName);
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      handleSubtaskValueUpdate(isChecked, newSubtaskName)
+    }
+  }
+
+  return (
+    <div className='flex flex-row justify-between items-center cursor-default hover:bg-slate-200'>
+      <p className='flex flex-row items-center gap-1 w-3/4 text-lg text-dark'>
+      <input
+          type='checkbox'
+          onClick={() => { handleCompletitionValueChange()}}
+          defaultChecked={completed}
+          className='h-4 w-4 cursor-pointer text-dark'
+        />
+        <input className='bg-transparent outline-none cursor-pointer hover:underline w-full' value={newSubtaskName} onChange={(e) => setNewSubtaskName(e.target.value)} onBlur={() => handleSubtaskValueUpdate(isChecked, newSubtaskName)} onKeyDown={handleKeyDown} />
+      </p>
+      <svg className='h-5 w-5 stroke-dark fill-none cursor-pointer' onClick={() => handleSubtaskDeletion(taskName, subtaskName)} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"> <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="m20 9l-1.995 11.346A2 2 0 0 1 16.035 22h-8.07a2 2 0 0 1-1.97-1.654L4 9m17-3h-5.625M3 6h5.625m0 0V4a2 2 0 0 1 2-2h2.75a2 2 0 0 1 2 2v2m-6.75 0h6.75" /> </svg>
+    </div>
   )
 })
 
@@ -97,7 +155,7 @@ const TaskCardPopup: React.FC<{ task: Task, setIsPopupOpen: React.Dispatch<SetSt
             <p className='text-lg text-dark font-semibold'> Subtasks: </p>
             <div className='space-y-2'>
               {task.subtasks.map((subtask) => (
-                <Subtask key={subtask.name} name={subtask.name} completed={subtask.completed} />
+                <Subtask key={subtask.name} taskName={task.name} subtaskName={subtask.name} completed={subtask.completed} />
               ))}
             </div>
           </>

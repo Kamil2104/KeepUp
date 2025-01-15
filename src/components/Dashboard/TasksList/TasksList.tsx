@@ -18,6 +18,8 @@ const TasksList: React.FC = React.memo(() => {
   const [isTaskManagementOpen, setIsTaskManagementOpen] = useState<boolean>(false);
   const [taskManagementType, setTaskManagementType] = useState<string>('');
 
+  const [editedTask, setEditedTask] = useState<Task | null>(null)
+
   const [filterType, setFilterType] = useState<string>('All')
   const [sortType, setSortType] = useState<[string, string]>(['Category', 'Descending'])
 
@@ -33,16 +35,16 @@ const TasksList: React.FC = React.memo(() => {
       ?
         <>
           <TasksActions handleTaskManagementOpening={handleTaskManagementOpening} filterType={filterType} sortType={sortType}  updateFilterType={updateFilterType} updateSortType={updateSortType} toggleSortDirection={toggleSortDirection} />
-          <Tasks userTasks={userTasks} filterType={filterType} sortType={sortType}/>
+          <Tasks userTasks={userTasks} filterType={filterType} sortType={sortType} handleTaskManagementOpening={handleTaskManagementOpening} setEditedTask={setEditedTask} />
         </>
       : <NoTasksAvailable handleTaskManagementOpening={handleTaskManagementOpening} />
       }
-      {isTaskManagementOpen && <TaskManagement taskManagementType={taskManagementType} setIsTaskManagementOpen={setIsTaskManagementOpen} />}
+      {isTaskManagementOpen && <TaskManagement taskManagementType={taskManagementType} setIsTaskManagementOpen={setIsTaskManagementOpen} editedTask={editedTask} setEditedTask={setEditedTask} />}
     </div>
   );
 });
 
-const Tasks: React.FC<{ userTasks: Task[], filterType: string, sortType: [string, string] }> = React.memo(({ userTasks, filterType, sortType }) => {
+const Tasks: React.FC<{ userTasks: Task[], filterType: string, sortType: [string, string], handleTaskManagementOpening: (type: string) => void, setEditedTask: (task: Task) => void }> = React.memo(({ userTasks, filterType, sortType, handleTaskManagementOpening, setEditedTask }) => {
   const filteredAndSortedTasks = filterAndSortTasks(userTasks, filterType, sortType);
   const displayedTasks = groupTasksByTag(filteredAndSortedTasks);
 
@@ -53,7 +55,7 @@ const Tasks: React.FC<{ userTasks: Task[], filterType: string, sortType: [string
           <h2 className={`w-full text-2xl font-heading font-semibold text-black py-2 pl-4 rounded-tl-md rounded-tr-md ${backgroundColor}`}> {tagName} </h2>
           <div className="flex flex-col">
             {tasks.map((task) => (
-              <TaskCard key={task.name} task={task} borderColor={borderColor} />
+              <TaskCard key={task.name} task={task} borderColor={borderColor} handleTaskManagementOpening={handleTaskManagementOpening} setEditedTask={setEditedTask}/>
             ))}
           </div>
         </div>

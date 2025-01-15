@@ -37,6 +37,7 @@ export interface InputType {
     placeholder: string;
     value: string;
     onChange: (e: string) => void;
+    readOnly: boolean;
 }
 
 export interface SubtasksType {
@@ -48,6 +49,7 @@ export interface SubtasksType {
 export interface SubtaskDisplayType extends SubtaskType {
     value: SubtaskType[];
     onUpdate: (updatedSubtasks: SubtaskType[]) => void;
+    handleRemoveSubtask: (nameOfSubtaskToDelete: string) => void;
 }
 
 export interface SelectType {

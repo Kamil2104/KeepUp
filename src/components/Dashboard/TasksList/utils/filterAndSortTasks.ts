@@ -37,9 +37,9 @@ const sortTasks = (tasks: Task[], sortType: [string, string]): Task[] => {
     return tasksCopy.sort((a, b) => compare(a.tag.name, b.tag.name));
   }
 
-  // Sort by due date. Convert date to ISO format for proper comparison
+  // Sort by due date.
   if (sortBy === 'Due date') {
-    return tasksCopy.sort((a, b) => compare(convertDateToISO(a.dueDate || ''), convertDateToISO(b.dueDate || '')));
+    return tasksCopy.sort((a, b) => compare(a.dueDate || '', b.dueDate || ''));
   }
 
   // Sort by priority using predefined priority values
@@ -55,11 +55,4 @@ const sortTasks = (tasks: Task[], sortType: [string, string]): Task[] => {
 
   // If no matching sort criteria, return tasks as they are
   return tasksCopy;
-};
-
-// Function to convert date from DD.MM.YYYY format to YYYY-MM-DD format (ISO 8601)
-// This ensures that the date comparison works correctly.
-const convertDateToISO = (dateStr: string): string => {
-  const [day, month, year] = dateStr.split('.');
-  return `${year}-${month}-${day}`;
 };
