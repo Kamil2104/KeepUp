@@ -30,7 +30,7 @@ const TasksList: React.FC = React.memo(() => {
   const toggleSortDirection = () => setSortType([sortType[0], sortType[1] === 'Ascending' ? 'Descending' : 'Ascending'])
 
   return (
-    <div className="flex flex-col justify-start items-center gap-8 w-full h-full mt-2">
+    <div className="flex flex-col justify-start items-center gap-8 min-w-full mt-2 overflow-y-scroll max-h-full min-h-[90%]">
       {userTasks.length > 0
       ?
         <>

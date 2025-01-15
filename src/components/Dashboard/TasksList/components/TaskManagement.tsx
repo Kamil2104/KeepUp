@@ -1,4 +1,4 @@
-import React, { useState, SetStateAction } from 'react'
+import React, { SetStateAction, useState, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 
 import { Task, SubtaskDisplayType, InputType, SubtasksType, SelectType } from '../../../../interfaces/TasksInterfaces'
@@ -13,12 +13,12 @@ const TaskManagement: React.FC<{ taskManagementType: string, setIsTaskManagement
 
   const userTags = useSelector((state: { userPreferences: UserPreferencesType }) => state.userPreferences.tags)
 
-  const today = new Date();
-  const formattedDate = today.toISOString().split('T')[0]; // YYYY-MM-DD
+  const today = new Date()
+  const formattedDate = today.toISOString().split('T')[0] // YYYY-MM-DD
 
   const taskStatusOptions = ['To do', 'In progress', 'Done']
   const taskPriorityOptions = ['Low', 'Medium', 'High']
-  const tagOptions = userTags.map(tag => tag.name)
+  const tagOptions = useMemo(() => userTags.map(tag => tag.name), [userTags])
 
   const [taskData, setTaskData] = useState<Task>(
     editedTask === null
@@ -102,8 +102,8 @@ const Subtasks: React.FC<SubtasksType> = React.memo(({ id, value, onUpdate }) =>
 
   const handleAddSubtask = () => {
     if (newSubtask.trim()) {
-      onUpdate([...value, { name: newSubtask, completed: false }])
-      setNewSubtask('')
+      onUpdate([...value, { name: newSubtask, completed: false }]);
+      setNewSubtask('');
     }
   }
 
@@ -114,8 +114,8 @@ const Subtasks: React.FC<SubtasksType> = React.memo(({ id, value, onUpdate }) =>
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      e.preventDefault()
-      handleAddSubtask()
+      e.preventDefault();
+      handleAddSubtask();
     }
   }
 
