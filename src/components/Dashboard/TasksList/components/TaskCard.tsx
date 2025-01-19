@@ -57,7 +57,7 @@ const HeadingAndStatus: React.FC<{ text: string, status: string, handleCompleted
 
   return (
     <div className='flex flex-row items-center'>
-    <Checkbox isChecked={isChecked} onClick={handleClick}/>
+    <CompletionCheckbox isChecked={isChecked} onClick={handleClick}/>
     <div className='flex flex-row justify-center items-center gap-5'>
       <h3 className='font-heading font-medium text-dark text-xl leading-none'> {text} </h3>
       <p className={`font-body text-dark px-3 py-0.5 rounded-xl ${statusBackgroundColor}`}> {status} </p>
@@ -66,7 +66,7 @@ const HeadingAndStatus: React.FC<{ text: string, status: string, handleCompleted
   )
 })
 
-const Checkbox: React.FC<{isChecked: boolean, onClick: () => void}> = ({isChecked, onClick}) => {
+const CompletionCheckbox: React.FC<{isChecked: boolean, onClick: () => void}> = ({isChecked, onClick}) => {
   return (
     <div className={`w-6 h-6 border-2 rounded-full cursor-pointer mr-4 transition-all ${isChecked ? 'bg-green-500 border-green-500' : 'bg-white border-gray-300'} flex items-center justify-center`} onClick={onClick}>
         {isChecked && <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="white" className="bi bi-check" viewBox="0 0 16 16">
